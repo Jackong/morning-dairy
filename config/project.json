@@ -1,0 +1,13 @@
+{
+    "server": {
+        "name": "morning-dairy",
+        "addr": ":7777"
+    },
+    "log": {
+        "dir": "log"
+    },
+    "view" : {
+        "root": "src/github.com/Jackong/gweb/view",
+        "paths": ["/js/", "/css/", "/img/", "/html/"]
+    }
+}
