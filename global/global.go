@@ -11,18 +11,28 @@ import (
 	"os"
 	"fmt"
 	"morning-dairy/config"
+	"time"
 )
 
 var (
 	GoPath string
-	Config config.Config
+	Now func() string
+	Time func() time.Time
+	Project config.Config
 	Log log.Logger
 	Router *mux.Router
 )
 
 func init() {
+	Now = func() string {
+		return time.Now().Format("2006-01-02 15:04:05")
+	}
+	Time = func() time.Time {
+		return time.Now()
+	}
+
 	GoPath = os.Getenv("GOPATH")
-	Config = config.NewConfig(GoPath  + "/src/morning-dairy/config/project.json")
+	Project = config.NewConfig(GoPath  + "/src/morning-dairy/config/project.json")
 	Router = mux.NewRouter()
 
 	debug := fileLog("debug.log", log.LEVEL_DEBUG)
@@ -32,10 +42,10 @@ func init() {
 }
 
 func fileLog(name string, level int) log.Logger {
-	logFile, err := os.OpenFile(Config.String("log", "dir") + "/" + name, os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
+	logFile, err := os.OpenFile(Project.String("log", "dir") + "/" + name, os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-	return log.NewLogger(logFile, Config.String("server", "name"), level)
+	return log.NewLogger(logFile, Project.String("server", "name"), level)
 }

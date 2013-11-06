@@ -4,8 +4,7 @@
         "addr": ":7777"
     },
     "log": {
-        "dir": "log",
-        "level": 6
+        "dir": "log"
     },
     "view" : {
         "root": "src/github.com/Jackong/gweb/view",

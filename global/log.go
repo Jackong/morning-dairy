@@ -48,5 +48,5 @@ func Alert(code int, req *http.Request, v...interface {}) {
 }
 
 func Fatal(code int, req *http.Request, v...interface {}) {
-	Log.Fatal(logMore(code, req), v)...)
+	Log.Fatal(append(logMore(code, req), v)...)
 }

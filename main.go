@@ -25,7 +25,7 @@ func main() {
 	Log.Warn("warn")
 	Log.Alert("alert")
 	Log.Error("error")
-	err := http.ListenAndServe(Config.String("server", "addr"), Router)
+	err := http.ListenAndServe(Project.String("server", "addr"), Router)
 	if	err != nil {
 		fmt.Println(err)
 		os.Exit(2)
