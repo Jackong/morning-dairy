@@ -77,10 +77,10 @@ func mailLog(level int) log.Logger {
 
 func openDb() {
 	settings := db.DataSource{
-		Socket:   "/var/run/mysqld/mysqld.sock",
-		Database: "test",
-		User:     "root",
-		Password: "123456",
+		Socket:   Project.String("db", "socket"),
+		Database: Project.String("db", "database"),
+		User:     Project.String("db", "user"),
+		Password: Project.String("db", "password"),
 	}
 
 	var err error
