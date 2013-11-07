@@ -5,6 +5,9 @@
     },
     "log": {
         "dir": "log",
+        "file": {
+            "level":6
+        },
         "email": {
             "user":"",
             "password":"",

@@ -34,8 +34,8 @@ func init() {
 
 	Router = mux.NewRouter()
 
-	fileLog := fileLog("access.log", log.LEVEL_DEBUG)
-	mailLog := mailLog(log.LEVEL_ALERT)
+	fileLog := fileLog("access.log")
+	mailLog := mailLog()
 	Log = log.MultiLogger(fileLog, mailLog)
 }
 
@@ -55,16 +55,16 @@ func loadConfig() {
 	Project = config.NewConfig(GoPath  + "/src/morning-dairy/config/project.json")
 }
 
-func fileLog(name string, level int) log.Logger {
+func fileLog(name string) log.Logger {
 	logFile, err := os.OpenFile(Project.String("log", "dir") + "/" + name, os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-	return log.NewLogger(logFile, Project.String("server", "name"), level)
+	return log.NewLogger(logFile, Project.String("server", "name"), int(Project.Get("log", "file", "level").(float64)))
 }
 
-func mailLog(level int) log.Logger {
+func mailLog() log.Logger {
 	mailLog := &writer.Email{
 		User: Project.String("log", "email", "user"),
 		Password: Project.String("log", "email", "password"),
@@ -72,7 +72,7 @@ func mailLog(level int) log.Logger {
 		To : Project.String("log", "email", "to"),
 		Subject: Project.String("log", "email", "subject"),
 	}
-	return log.NewLogger(mailLog, Project.String("server", "name"), level)
+	return log.NewLogger(mailLog, Project.String("server", "name"), int(Project.Get("log", "email", "level").(float64)))
 }
 
 func openDb() {

@@ -25,6 +25,23 @@ func NewConfig(file string) Config {
 	return config
 }
 
+func (this Config) Get(keys ... string) (val interface {}) {
+	tmp := this
+	for _, key := range keys {
+		val = tmp[key]
+		if val == nil {
+			return nil
+		}
+		switch val.(type) {
+		case map[string] interface {}:
+			tmp = val.(map[string] interface {})
+		default:
+			return val
+		}
+	}
+	return val
+}
+
 func (this Config) String(keys ... string) string {
 	tmp := this
 	for _, key := range keys {
