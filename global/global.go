@@ -66,11 +66,11 @@ func fileLog(name string, level int) log.Logger {
 
 func mailLog(level int) log.Logger {
 	mailLog := &writer.Email{
-		User: "jerkong@163.com",
-		Password: "1be.69318520",
-		Host : "smtp.163.com:25",
-		To : "jackongc@gmail.com",
-		Subject: "Warning",
+		User: Project.String("log", "email", "user"),
+		Password: Project.String("log", "email", "password"),
+		Host : Project.String("log", "email", "host"),
+		To : Project.String("log", "email", "to"),
+		Subject: Project.String("log", "email", "subject"),
 	}
 	return log.NewLogger(mailLog, Project.String("server", "name"), level)
 }

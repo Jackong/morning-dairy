@@ -4,7 +4,15 @@
         "addr": ":7777"
     },
     "log": {
-        "dir": "log"
+        "dir": "log",
+        "email": {
+            "user":"",
+            "password":"",
+            "host":"smtp.163.com:25",
+            "to":"",
+            "subject":"",
+            "level":1
+        }
     },
     "view" : {
         "root": "src/github.com/Jackong/gweb/view",
