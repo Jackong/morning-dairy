@@ -14,6 +14,7 @@ import (
 	"time"
 	"github.com/gosexy/db"
 	_ "github.com/gosexy/db/mysql"
+	"github.com/Jackong/log/writer"
 )
 
 var (
@@ -33,10 +34,9 @@ func init() {
 
 	Router = mux.NewRouter()
 
-	debug := fileLog("debug.log", log.LEVEL_DEBUG)
-	info := fileLog("info.log", log.LEVEL_INFO)
-	error := fileLog("error.log", log.LEVEL_ERROR)
-	Log = log.MultiLogger(debug, info, error)
+	fileLog := fileLog("access.log", log.LEVEL_DEBUG)
+	mailLog := mailLog(log.LEVEL_ALERT)
+	Log = log.MultiLogger(fileLog, mailLog)
 }
 
 func baseEnv() {
@@ -62,6 +62,17 @@ func fileLog(name string, level int) log.Logger {
 		os.Exit(2)
 	}
 	return log.NewLogger(logFile, Project.String("server", "name"), level)
+}
+
+func mailLog(level int) log.Logger {
+	mailLog := &writer.Email{
+		User: "jerkong@163.com",
+		Password: "1be.69318520",
+		Host : "smtp.163.com:25",
+		To : "jackongc@gmail.com",
+		Subject: "Warning",
+	}
+	return log.NewLogger(mailLog, Project.String("server", "name"), level)
 }
 
 func openDb() {
