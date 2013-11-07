@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"morning-dairy/config"
 	"time"
-	"github.com/gosexy/db"
-	_ "github.com/gosexy/db/mysql"
+	"github.com/Jackong/db"
+	_ "github.com/Jackong/db/mysql"
 	"github.com/Jackong/log/writer"
 )
 
