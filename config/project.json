@@ -1,4 +1,5 @@
 {
+    "formal":false,
     "server": {
         "name": "morning-dairy",
         "addr": ":7777"

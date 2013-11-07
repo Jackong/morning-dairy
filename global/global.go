@@ -84,11 +84,16 @@ func mailLog() log.Logger {
 	}
 
 	server := Project.String("server", "name")
-	if err := mail.SendMail("starting server " + server + "..."); err != nil {
-		fmt.Println(err)
-		os.Exit(2)
+	check := Project.Get("formal").(bool)
+	if check {
+		if err := mail.SendMail("starting server " + server + "..."); err != nil {
+			fmt.Println(err)
+			os.Exit(2)
+		}
+		return log.NewLogger(&asyncMail{mail}, server, int(Project.Get("log", "email", "level").(float64)))
+	} else {
+		return fileLog("email.log")
 	}
-	return log.NewLogger(&asyncMail{mail}, server, int(Project.Get("log", "email", "level").(float64)))
 }
 
 func openDb() {

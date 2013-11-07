@@ -43,38 +43,20 @@ func (this Config) Get(keys ... string) (val interface {}) {
 }
 
 func (this Config) String(keys ... string) string {
-	tmp := this
-	for _, key := range keys {
-		val := tmp[key]
-		if val == nil {
-			return ""
-		}
-		switch val.(type) {
-		case string:
-			return val.(string)
-		default:
-			tmp = val.(map[string] interface {})
-		}
+	val := this.Get(keys...)
+	if val == nil {
+		return ""
 	}
-	return ""
+	return val.(string)
 }
 
 func (this Config) Slice(keys ... string) (array []string) {
-    tmp := this
-	for _, key := range keys {
-		val := tmp[key]
-		if val == nil {
-			return array
-		}
-		switch val.(type) {
-		case ([]interface {}):
-			for _, element := range val.([]interface {}) {
-				array = append(array, element.(string))
-			}
-			return array
-		default:
-			tmp = val.(map[string] interface {})
-		}
+	val := this.Get(keys...)
+	if val == nil {
+		return
 	}
-	return array
+	for _, element := range val.([]interface {}) {
+		array = append(array, element.(string))
+	}
+	return
 }
