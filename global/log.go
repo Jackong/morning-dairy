@@ -5,7 +5,10 @@
  */
 package global
 
-import "net/http"
+import (
+	"net/http"
+	"github.com/Jackong/log/writer"
+)
 
 const (
 	DELIMITER = "|"
@@ -49,4 +52,15 @@ func Alert(code int, req *http.Request, v...interface {}) {
 
 func Fatal(code int, req *http.Request, v...interface {}) {
 	Log.Fatal(append(logMore(code, req), v)...)
+}
+
+
+type asyncMail struct {
+	*writer.Email
+}
+
+
+func (this *asyncMail) Write(p []byte) (n int, err error) {
+	go this.Email.Write(p)
+	return
 }

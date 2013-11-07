@@ -28,14 +28,24 @@ var (
 )
 
 func init() {
+	fmt.Println("init env...")
 	baseEnv()
+
+	fmt.Println("loading config...")
 	loadConfig()
+
+	fmt.Println("opening db...")
 	openDb()
 
+	fmt.Println("init router...")
 	Router = mux.NewRouter()
 
-	fileLog := fileLog("access.log")
+	fmt.Println("getting mail log...")
 	mailLog := mailLog()
+
+	fmt.Println("getting file log...")
+	fileLog := fileLog("access.log")
+
 	Log = log.MultiLogger(fileLog, mailLog)
 }
 
@@ -56,23 +66,29 @@ func loadConfig() {
 }
 
 func fileLog(name string) log.Logger {
-	logFile, err := os.OpenFile(Project.String("log", "dir") + "/" + name, os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
+	file, err := os.OpenFile(Project.String("log", "dir") + "/" + name, os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-	return log.NewLogger(logFile, Project.String("server", "name"), int(Project.Get("log", "file", "level").(float64)))
+	return log.NewLogger(file, Project.String("server", "name"), int(Project.Get("log", "file", "level").(float64)))
 }
 
 func mailLog() log.Logger {
-	mailLog := &writer.Email{
+	mail := &writer.Email{
 		User: Project.String("log", "email", "user"),
 		Password: Project.String("log", "email", "password"),
 		Host : Project.String("log", "email", "host"),
 		To : Project.String("log", "email", "to"),
 		Subject: Project.String("log", "email", "subject"),
 	}
-	return log.NewLogger(mailLog, Project.String("server", "name"), int(Project.Get("log", "email", "level").(float64)))
+
+	server := Project.String("server", "name")
+	if err := mail.SendMail("starting server " + server + "..."); err != nil {
+		fmt.Println(err)
+		os.Exit(2)
+	}
+	return log.NewLogger(&asyncMail{mail}, server, int(Project.Get("log", "email", "level").(float64)))
 }
 
 func openDb() {

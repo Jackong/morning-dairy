@@ -6,15 +6,15 @@
     "log": {
         "dir": "log",
         "file": {
-            "level":6
+            "level":7
         },
         "email": {
-            "user":"",
+            "user":"jerkong@163.com",
             "password":"",
             "host":"smtp.163.com:25",
-            "to":"",
-            "subject":"",
-            "level":1
+            "to":"jerkong@163.com",
+            "subject":"Warning",
+            "level":2
         }
     },
     "db": {
