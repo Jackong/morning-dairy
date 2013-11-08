@@ -7,7 +7,9 @@ package global
 
 import (
 	"net/http"
+	"sync"
 	"github.com/Jackong/log/writer"
+	"github.com/Jackong/log"
 )
 
 const (
@@ -63,4 +65,27 @@ type asyncMail struct {
 func (this *asyncMail) Write(p []byte) (n int, err error) {
 	go this.Email.Write(p)
 	return
+}
+
+
+type dateLog struct {
+	mu     sync.Mutex
+	dir string
+	date string
+	log.Logger
+}
+
+func (this *dateLog) Output(level, depth int, s string) {
+	this.ensureDate()
+	this.Logger.Output(level, depth + 1, s)
+}
+
+func (this *dateLog) ensureDate() {
+	this.mu.Lock()
+	defer this.mu.Unlock()
+	today := Today()
+	if this.date != today {
+		this.date = today
+		this.Logger = fileLog(this.dir, today)
+	}
 }

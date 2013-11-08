@@ -21,6 +21,7 @@ var (
 	GoPath string
 	Now func() string
 	Time func() time.Time
+	Today func() string
 	Project config.Config
 	Log log.Logger
 	Conn db.Database
@@ -41,10 +42,11 @@ func init() {
 	Router = mux.NewRouter()
 
 	fmt.Println("getting mail log...")
-	mailLog := mailLog()
+	today := Today()
+	mailLog := &dateLog{dir: "email", date: today, Logger: mailLog(today)}
 
 	fmt.Println("getting file log...")
-	fileLog := fileLog("access.log")
+	fileLog := &dateLog{dir: "access", date: today, Logger: fileLog("access", today)}
 
 	Log = log.MultiLogger(fileLog, mailLog)
 }
@@ -58,6 +60,10 @@ func baseEnv() {
 		return Time().Format("2006-01-02 15:04:05")
 	}
 
+	Today = func() string {
+		return Time().Format("2006-01-02")
+	}
+
 	GoPath = os.Getenv("GOPATH")
 }
 
@@ -65,16 +71,21 @@ func loadConfig() {
 	Project = config.NewConfig(GoPath  + "/src/morning-dairy/config/project.json")
 }
 
-func fileLog(name string) log.Logger {
-	file, err := os.OpenFile(Project.String("log", "dir") + "/" + name, os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
+func fileLog(dir, date string) log.Logger {
+	dir = Project.String("log", "dir") + "/" +  dir
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		os.MkdirAll(dir, os.ModePerm)
+	}
+	file, err := os.OpenFile(dir + "/" + date + ".log", os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-	return log.NewLogger(file, Project.String("server", "name"), int(Project.Get("log", "file", "level").(float64)))
+	logger := log.NewLogger(file, Project.String("server", "name"), int(Project.Get("log", "file", "level").(float64)))
+	return logger
 }
 
-func mailLog() log.Logger {
+func mailLog(date string) log.Logger {
 	mail := &writer.Email{
 		User: Project.String("log", "email", "user"),
 		Password: Project.String("log", "email", "password"),
@@ -91,9 +102,8 @@ func mailLog() log.Logger {
 			os.Exit(2)
 		}
 		return log.NewLogger(&asyncMail{mail}, server, int(Project.Get("log", "email", "level").(float64)))
-	} else {
-		return fileLog("email.log")
 	}
+	return fileLog("email", date)
 }
 
 func openDb() {
