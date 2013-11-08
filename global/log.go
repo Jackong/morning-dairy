@@ -15,47 +15,19 @@ import (
 const (
 	DELIMITER = "|"
 )
-func logMore(code int, req *http.Request) (more []interface {}) {
-	return append(more,
+
+func LogAppend(code int, req *http.Request, v ... interface {}) (more []interface {}) {
+	more = append(more,
 		code, DELIMITER,
 		req.RemoteAddr, DELIMITER,
 		req.Method, DELIMITER,
 		req.URL.Path, DELIMITER,
 		req.UserAgent(), DELIMITER)
+	for _, s := range v {
+		more = append(more, s)
+	}
+	return
 }
-
-func Debug(code int, req *http.Request, v...interface {}) {
-    Log.Debug(append(logMore(code, req), v)...)
-}
-
-
-func Info(code int, req *http.Request, v...interface {}) {
-	Log.Info(append(logMore(code, req), v)...)
-}
-
-
-func Config(code int, req *http.Request, v...interface {}) {
-	Log.Config(append(logMore(code, req), v)...)
-}
-
-
-func Warn(code int, req *http.Request, v...interface {}) {
-	Log.Warn(append(logMore(code, req), v)...)
-}
-
-
-func Error(code int, req *http.Request, v...interface {}) {
-	Log.Error(append(logMore(code, req), v)...)
-}
-
-func Alert(code int, req *http.Request, v...interface {}) {
-	Log.Alert(append(logMore(code, req), v)...)
-}
-
-func Fatal(code int, req *http.Request, v...interface {}) {
-	Log.Fatal(append(logMore(code, req), v)...)
-}
-
 
 type asyncMail struct {
 	*writer.Email

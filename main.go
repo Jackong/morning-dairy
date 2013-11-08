@@ -17,7 +17,7 @@ import (
 func main() {
 	Router.HandleFunc("/{what}", func(writer http.ResponseWriter, req * http.Request) {
 			vars := mux.Vars(req)
-			Debug(1, req, "hello")
+			Log.Debug(LogAppend(1, req, "hello")...)
 			fmt.Fprint(writer, vars["what"])
 		})
 	Log.Debug("debug")
