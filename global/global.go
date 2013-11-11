@@ -42,25 +42,28 @@ func init() {
 	fmt.Println("init router...")
 	Router = mux.NewRouter()
 
-	today := Today()
+	initLog()
+}
 
+func initLog() {
+	today := Today()
 	fmt.Println("getting mail log...")
 	mailLog := newDateLog(today, mailLog)
 
 	fileLevel := int(Project.Get("log", "file", "level").(float64))
 
 	fmt.Println("getting access log...")
-	Access = &accessLog{logger: newDateLog(today, func(date string) log.Logger{
-			return fileLog("access", date, fileLevel)
-		})}
+	Access = &accessLog{logger: log.MultiLogger(newDateLog(today, func(date string) log.Logger {
+				return fileLog("access", date, fileLevel)
+			}), mailLog)}
 
 
 	fmt.Println("getting action log...")
-	fileLog := newDateLog(today, func(date string) log.Logger{
+	actionLog := newDateLog(today, func(date string) log.Logger {
 			return fileLog("action", date, fileLevel)
 		})
 
-	Log = log.MultiLogger(fileLog, mailLog)
+	Log = log.MultiLogger(actionLog, mailLog)
 }
 
 func baseEnv() {
