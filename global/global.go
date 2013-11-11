@@ -23,6 +23,7 @@ var (
 	Time func() time.Time
 	Today func() string
 	Project config.Config
+	Access *accessLog
 	Log log.Logger
 	Conn db.Database
 	Router *mux.Router
@@ -43,10 +44,13 @@ func init() {
 
 	fmt.Println("getting mail log...")
 	today := Today()
+
+	Access = &accessLog{logger: &dateLog{dir: "access", date: today, Logger: fileLog("access", today)}}
+
 	mailLog := &dateLog{dir: "email", date: today, Logger: mailLog(today)}
 
 	fmt.Println("getting file log...")
-	fileLog := &dateLog{dir: "access", date: today, Logger: fileLog("access", today)}
+	fileLog := &dateLog{dir: "action", date: today, Logger: fileLog("action", today)}
 
 	Log = log.MultiLogger(fileLog, mailLog)
 }

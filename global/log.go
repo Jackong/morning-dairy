@@ -12,23 +12,6 @@ import (
 	"github.com/Jackong/log"
 )
 
-const (
-	DELIMITER = "|"
-)
-
-func LogAppend(code int, req *http.Request, v ... interface {}) (more []interface {}) {
-	more = append(more,
-		code, DELIMITER,
-		req.RemoteAddr, DELIMITER,
-		req.Method, DELIMITER,
-		req.URL.Path, DELIMITER,
-		req.UserAgent(), DELIMITER)
-	for _, s := range v {
-		more = append(more, s)
-	}
-	return
-}
-
 type asyncMail struct {
 	*writer.Email
 }
@@ -60,4 +43,52 @@ func (this *dateLog) ensureDate() {
 		this.date = today
 		this.Logger = fileLog(this.dir, today)
 	}
+}
+
+type accessLog struct {
+	logger log.Logger
+}
+
+func (this *accessLog) Debug(code int, req *http.Request, v ... interface {}) {
+    this.logger.Debug(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) Info(code int, req *http.Request, v ... interface {}) {
+	this.logger.Info(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) Config(code int, req *http.Request, v ... interface {}) {
+	this.logger.Config(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) Warn(code int, req *http.Request, v ... interface {}) {
+	this.logger.Warn(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) Error(code int, req *http.Request, v ... interface {}) {
+	this.logger.Error(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) Alert(code int, req *http.Request, v ... interface {}) {
+	this.logger.Alert(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) Fatal(code int, req *http.Request, v ... interface {}) {
+	this.logger.Fatal(this.logAppend(code, req, v)...)
+}
+
+func (this *accessLog) logAppend(code int, req *http.Request, v ... interface {}) (more []interface {}) {
+	const (
+		DELIMITER = "|"
+	)
+	more = append(more,
+		code, DELIMITER,
+		req.RemoteAddr, DELIMITER,
+		req.Method, DELIMITER,
+		req.URL.Path, DELIMITER,
+		req.UserAgent(), DELIMITER)
+	for _, s := range v {
+		more = append(more, s)
+	}
+	return
 }
