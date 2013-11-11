@@ -42,15 +42,23 @@ func init() {
 	fmt.Println("init router...")
 	Router = mux.NewRouter()
 
-	fmt.Println("getting mail log...")
 	today := Today()
 
-	Access = &accessLog{logger: &dateLog{dir: "access", date: today, Logger: fileLog("access", today)}}
+	fmt.Println("getting mail log...")
+	mailLog := newDateLog(today, mailLog)
 
-	mailLog := &dateLog{dir: "email", date: today, Logger: mailLog(today)}
+	fileLevel := int(Project.Get("log", "file", "level").(float64))
 
-	fmt.Println("getting file log...")
-	fileLog := &dateLog{dir: "action", date: today, Logger: fileLog("action", today)}
+	fmt.Println("getting access log...")
+	Access = &accessLog{logger: newDateLog(today, func(date string) log.Logger{
+			return fileLog("access", date, fileLevel)
+		})}
+
+
+	fmt.Println("getting action log...")
+	fileLog := newDateLog(today, func(date string) log.Logger{
+			return fileLog("action", date, fileLevel)
+		})
 
 	Log = log.MultiLogger(fileLog, mailLog)
 }
@@ -75,7 +83,7 @@ func loadConfig() {
 	Project = config.NewConfig(GoPath  + "/src/morning-dairy/config/project.json")
 }
 
-func fileLog(dir, date string) log.Logger {
+func fileLog(dir, date string, level int) log.Logger {
 	dir = Project.String("log", "dir") + "/" +  dir
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		os.MkdirAll(dir, os.ModePerm)
@@ -85,7 +93,7 @@ func fileLog(dir, date string) log.Logger {
 		fmt.Println(err)
 		os.Exit(2)
 	}
-	logger := log.NewLogger(file, Project.String("server", "name"), int(Project.Get("log", "file", "level").(float64)))
+	logger := log.NewLogger(file, Project.String("server", "name"), level)
 	return logger
 }
 
@@ -99,15 +107,16 @@ func mailLog(date string) log.Logger {
 	}
 
 	server := Project.String("server", "name")
+	mailLevel := int(Project.Get("log", "email", "level").(float64))
 	check := Project.Get("formal").(bool)
 	if check {
 		if err := mail.SendMail("starting server " + server + "..."); err != nil {
 			fmt.Println(err)
 			os.Exit(2)
 		}
-		return log.NewLogger(&asyncMail{mail}, server, int(Project.Get("log", "email", "level").(float64)))
+		return log.NewLogger(&asyncMail{mail}, server, mailLevel)
 	}
-	return fileLog("email", date)
+	return fileLog("email", date, mailLevel)
 }
 
 func openDb() {

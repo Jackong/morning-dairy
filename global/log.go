@@ -25,8 +25,8 @@ func (this *asyncMail) Write(p []byte) (n int, err error) {
 
 type dateLog struct {
 	mu     sync.Mutex
-	dir string
 	date string
+	getLog func(string) log.Logger
 	log.Logger
 }
 
@@ -41,8 +41,12 @@ func (this *dateLog) ensureDate() {
 	today := Today()
 	if this.date != today {
 		this.date = today
-		this.Logger = fileLog(this.dir, today)
+		this.Logger = this.getLog(this.date)
 	}
+}
+
+func newDateLog(date string, getLog func(date string) log.Logger) *dateLog {
+	return &dateLog{date: date, Logger: getLog(date)}
 }
 
 type accessLog struct {
