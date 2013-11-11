@@ -15,6 +15,7 @@ import (
 	"github.com/Jackong/db"
 	_ "github.com/Jackong/db/mysql"
 	"github.com/Jackong/log/writer"
+	"net/http"
 )
 
 var (
@@ -26,7 +27,7 @@ var (
 	Access *accessLog
 	Log log.Logger
 	Conn db.Database
-	Router *mux.Router
+	Router *Handler
 )
 
 func init() {
@@ -40,7 +41,7 @@ func init() {
 	openDb()
 
 	fmt.Println("init router...")
-	Router = mux.NewRouter()
+	Router = &Handler{mux.NewRouter()}
 
 	initLog()
 }
@@ -64,6 +65,17 @@ func initLog() {
 		})
 
 	Log = log.MultiLogger(actionLog, mailLog)
+	
+	initInterceptors()
+}
+
+func initInterceptors() {
+    OnBefore(logBefore)
+}
+
+func logBefore(http.ResponseWriter, req *http.Request) bool {
+	Access.Info(0, req, "before", "route")
+	return true
 }
 
 func baseEnv() {
