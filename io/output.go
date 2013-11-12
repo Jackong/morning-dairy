@@ -7,29 +7,17 @@ package io
 
 import (
 	"net/http"
-	"fmt"
 )
 
 type Output interface {
-	Append(a []interface {})
+	Puts(ret []interface {})
 	Render() (error)
 }
 
-type Normal struct {
-	http.ResponseWriter
-	ret []interface {}
+func Puts(writer http.ResponseWriter, ret ...interface {}) {
+	writer.(Output).Puts(ret)
 }
 
-func (this *Normal) Append(a []interface {}) {
-	this.ret = a
-}
-
-func (this *Normal) Render() (err error) {
-	fmt.Fprint(this.ResponseWriter, this.ret)
-	return err
-}
-
-
-func Puts(writer http.ResponseWriter, a ... interface {}) {
-	writer.(Output).Append(a)
+func Return(writer http.ResponseWriter, code int, msg string) {
+	Puts(writer, "code", code, "msg", msg)
 }

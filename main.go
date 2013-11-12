@@ -16,11 +16,11 @@ import (
 
 
 func main() {
-	Router.HandleFunc("/{what}/{xx}", func(writer http.ResponseWriter, req * http.Request) {
+	Router.HandleFunc("/{what}/{when}", func(writer http.ResponseWriter, req * http.Request) {
 			vars := mux.Vars(req)
-			io.Required(req, "kk")
-			Access.Debug(1, req, "xxx")
-			io.Puts(writer, vars)
+			io.Required(req, "param")
+			Access.Debug(1, req, "hello")
+			io.Puts(writer, "data", vars)
 		})
 	err := http.ListenAndServe(Project.String("server", "addr"), Router)
 	if	err != nil {

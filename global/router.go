@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"morning-dairy/err"
 	"morning-dairy/io/output"
+	"morning-dairy/io"
 )
 
 type BeforeFunc func(http.ResponseWriter, *http.Request) error
@@ -24,16 +25,17 @@ type router struct {
 }
 
 func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
-	op := &output.Json{ResponseWriter: writer}
+	op := output.NewJson(writer)
 
 	defer func() {
 		if e := recover(); e != nil {
 			accessErr := e.(err.AccessError)
 			Access.Error(accessErr.Code, req, accessErr.Msg)
-			http.Error(op, accessErr.Msg, accessErr.Code)
-			return
+			io.Return(op, accessErr.Code, accessErr.Msg)
 		}
-		op.Render()
+		if re := op.Render(); re != nil {
+			Access.Alert(http.StatusBadRequest, req, re)
+		}
 	}()
 
 	if !fireBefore(op, req, beforeFuncs) {

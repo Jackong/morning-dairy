@@ -13,20 +13,21 @@ import (
 
 type Json struct {
 	http.ResponseWriter
-	ret []interface {}
+	ret map[string]interface {}
 }
 
-func (this *Json) Append(a []interface {}) {
-	this.ret = a
+func NewJson(writer http.ResponseWriter) *Json{
+	return &Json{ResponseWriter: writer, ret: make(map[string]interface {})}
 }
 
+func (this *Json) Puts(ret []interface {}) {
+	for index := 0; index < len(ret); index += 2 {
+		this.ret[ret[index].(string)] = ret[index + 1]
+	}
+}
 func (this *Json) Render() (err error) {
 	var data []byte
-	if len(this.ret) == 1 {
-		data, err = json.Marshal(this.ret[0])
-	} else {
-		data, err = json.Marshal(this.ret)
-	}
+	data, err = json.Marshal(this.ret)
 	if err != nil {
 		return err
 	}
