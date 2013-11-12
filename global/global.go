@@ -27,7 +27,7 @@ var (
 	Access *accessLog
 	Log log.Logger
 	Conn db.Database
-	Router *Handler
+	Router *router
 )
 
 func init() {
@@ -41,7 +41,7 @@ func init() {
 	openDb()
 
 	fmt.Println("init router...")
-	Router = &Handler{mux.NewRouter()}
+	Router = &router{mux.NewRouter()}
 
 	initLog()
 }
@@ -73,8 +73,8 @@ func initInterceptors() {
     OnBefore(logBefore)
 }
 
-func logBefore(writer http.ResponseWriter, req *http.Request) (err error) {
-	Access.Info(0, req, "before", "route")
+func logBefore(writer http.ResponseWriter, req *http.Request) (err AccessError) {
+	Access.Info(0, req, "access")
 	return
 }
 

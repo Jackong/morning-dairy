@@ -20,11 +20,6 @@ func main() {
 			Access.Debug(1, req, "xxx")
 			fmt.Fprint(writer, vars["what"])
 		})
-	Log.Debug("debug")
-	Log.Info("info")
-	Log.Warn("warn")
-	Log.Alert("alert")
-	Log.Error("error")
 	err := http.ListenAndServe(Project.String("server", "addr"), Router)
 	if	err != nil {
 		fmt.Println(err)
