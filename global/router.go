@@ -22,19 +22,19 @@ type router struct {
 }
 
 func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
-	if !FireBefore(writer, req) {
+	if !fireBefore(writer, req, beforeFuncs) {
 		return
 	}
 	this.Router.ServeHTTP(writer, req)
 
-	FireAfter(writer, req)
+	fireAfter(writer, req)
 }
 
 func OnBefore(before ...BeforeFunc) {
     beforeFuncs = append(beforeFuncs, before...)
 }
 
-func FireBefore(writer http.ResponseWriter, req *http.Request) bool {
+func fireBefore(writer http.ResponseWriter, req *http.Request, beforeFuncs []BeforeFunc) bool {
 	for _, beforeFunc := range beforeFuncs {
 		if accessErr := beforeFunc(writer, req); accessErr.Code != CODE_OK {
 			Access.Error(accessErr.Code, req, accessErr.Msg)
@@ -49,8 +49,16 @@ func OnAfter(after ...http.HandlerFunc) {
     afterFuncs = append(afterFuncs, after...)
 }
 
-func FireAfter(writer http.ResponseWriter, req *http.Request) {
+func fireAfter(writer http.ResponseWriter, req *http.Request) {
     for _, afterFunc := range afterFuncs {
 		afterFunc(writer, req)
+	}
+}
+
+func OnBeforeRoute(handlerFunc http.HandlerFunc, before ...BeforeFunc) http.HandlerFunc {
+	return func(writer http.ResponseWriter, req *http.Request) {
+		if fireBefore(writer, req, before) {
+			handlerFunc(writer, req)
+		}
 	}
 }

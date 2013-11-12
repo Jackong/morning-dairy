@@ -65,12 +65,8 @@ func initLog() {
 		})
 
 	Log = log.MultiLogger(actionLog, mailLog)
-	
-	initInterceptors()
-}
 
-func initInterceptors() {
-    OnBefore(logBefore)
+	OnBefore(logBefore)
 }
 
 func logBefore(writer http.ResponseWriter, req *http.Request) (err AccessError) {
