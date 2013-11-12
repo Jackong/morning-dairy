@@ -10,5 +10,5 @@ type User struct {
 }
 
 func (this User) IsExist(name string) bool {
-	return true
+	return false
 }

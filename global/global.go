@@ -16,7 +16,6 @@ import (
 	_ "github.com/Jackong/db/mysql"
 	"github.com/Jackong/log/writer"
 	"net/http"
-	"morning-dairy/io/output"
 	"morning-dairy/err"
 )
 
@@ -77,20 +76,11 @@ func initLog() {
 	Log = log.MultiLogger(actionLog, mailLog)
 
 	OnBefore(logBefore)
-
-	OnAfter(logAfter)
 }
 
 func logBefore(writer http.ResponseWriter, req *http.Request) (err error) {
 	Access.Info(0, req, "access")
 	return
-}
-
-func logAfter(writer http.ResponseWriter, req * http.Request) {
-	if output.IsReturn(writer) {
-		return
-	}
-	output.Return(writer, http.StatusOK, "ok")
 }
 
 func baseEnv() {

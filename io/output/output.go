@@ -11,7 +11,6 @@ import (
 
 type Output interface {
 	Puts(ret []interface {})
-	IsReturn() bool
 	Render() (error)
 }
 
@@ -21,8 +20,4 @@ func Puts(writer http.ResponseWriter, ret ...interface {}) {
 
 func Return(writer http.ResponseWriter, code int, msg string) {
 	Puts(writer, "code", code, "msg", msg)
-}
-
-func IsReturn(writer http.ResponseWriter) bool {
-	return writer.(Output).IsReturn()
 }
