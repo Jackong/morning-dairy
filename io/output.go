@@ -8,26 +8,28 @@ package io
 import (
 	"net/http"
 	"fmt"
-	"encoding/json"
 )
 
-type Output struct {
+type Output interface {
+	Append(a []interface {})
+	Render() (error)
+}
+
+type Normal struct {
 	http.ResponseWriter
 	ret []interface {}
 }
 
-func (this *Output) Append(a []interface {}) {
+func (this *Normal) Append(a []interface {}) {
 	this.ret = a
 }
 
-func (this *Output) Render(req *http.Request) {
-	//accept := req.Header.Get("Accept")
-	//if accept == "application/json" {
-		js, _ := json.Marshal(this.ret)
-		fmt.Fprint(this.ResponseWriter, string(js))
-	//}
+func (this *Normal) Render() (err error) {
+	fmt.Fprint(this.ResponseWriter, this.ret)
+	return err
 }
 
+
 func Puts(writer http.ResponseWriter, a ... interface {}) {
-	writer.(*Output).Append(a)
+	writer.(Output).Append(a)
 }

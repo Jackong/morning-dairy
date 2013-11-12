@@ -8,8 +8,8 @@ package global
 import (
 	"net/http"
 	"github.com/gorilla/mux"
-	"morning-dairy/io"
 	"morning-dairy/err"
+	"morning-dairy/io/output"
 )
 
 type BeforeFunc func(http.ResponseWriter, *http.Request) error
@@ -24,7 +24,7 @@ type router struct {
 }
 
 func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
-	op := &io.Output{ResponseWriter: writer}
+	op := &output.Json{ResponseWriter: writer}
 
 	defer func() {
 		if e := recover(); e != nil {
@@ -33,7 +33,7 @@ func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 			http.Error(op, accessErr.Msg, accessErr.Code)
 			return
 		}
-		op.Render(req)
+		op.Render()
 	}()
 
 	if !fireBefore(op, req, beforeFuncs) {
