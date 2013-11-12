@@ -45,7 +45,7 @@ func FireBefore(writer http.ResponseWriter, req *http.Request) bool {
 	return true
 }
 
-func OnAfter(after ...BeforeFunc) {
+func OnAfter(after ...http.HandlerFunc) {
     afterFuncs = append(afterFuncs, after...)
 }
 
