@@ -16,7 +16,7 @@ import (
 	_ "github.com/Jackong/db/mysql"
 	"github.com/Jackong/log/writer"
 	"net/http"
-	"morning-dairy/io"
+	"morning-dairy/io/output"
 	"morning-dairy/err"
 )
 
@@ -88,7 +88,7 @@ func logBefore(writer http.ResponseWriter, req *http.Request) (err error) {
 
 func logAfter(writer http.ResponseWriter, req * http.Request) {
 	Access.Info(http.StatusOK, req, "response")
-	io.Return(writer, http.StatusOK, "ok")
+	output.Return(writer, http.StatusOK, "ok")
 }
 
 func baseEnv() {

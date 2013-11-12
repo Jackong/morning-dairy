@@ -3,7 +3,7 @@
  * Date: 11/12/13
  * Time: 2:26 PM
  */
-package io
+package output
 
 import (
 	"net/http"

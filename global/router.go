@@ -10,7 +10,6 @@ import (
 	"github.com/gorilla/mux"
 	"morning-dairy/err"
 	"morning-dairy/io/output"
-	"morning-dairy/io"
 )
 
 type BeforeFunc func(http.ResponseWriter, *http.Request) error
@@ -31,7 +30,7 @@ func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 		if e := recover(); e != nil {
 			accessErr := e.(err.AccessError)
 			Access.Error(accessErr.Code, req, accessErr.Msg)
-			io.Return(op, accessErr.Code, accessErr.Msg)
+			output.Return(op, accessErr.Code, accessErr.Msg)
 		}
 		if re := op.Render(); re != nil {
 			Access.Alert(http.StatusBadRequest, req, re)

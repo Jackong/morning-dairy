@@ -7,7 +7,7 @@ package sign
 
 import (
 	"net/http"
-	"morning-dairy/io"
+	"morning-dairy/io/input"
 	. "morning-dairy/global"
 )
 
@@ -16,6 +16,6 @@ func init() {
 }
 
 func signUp(writer http.ResponseWriter, req * http.Request) {
-	io.Required(req, "userName")
-	io.Required(req, "password")
+	input.Required(req, "userName")
+	input.Required(req, "password")
 }
