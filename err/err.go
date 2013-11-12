@@ -3,7 +3,7 @@
  * Date: 11/12/13
  * Time: 11:14 AM
  */
-package global
+package err
 
 type AccessError struct {
 	Code int

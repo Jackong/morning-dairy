@@ -11,15 +11,16 @@ import (
 	"fmt"
 	"os"
 	. "morning-dairy/global"
+	"morning-dairy/io"
 )
 
 
 func main() {
-	Router.HandleFunc("/{what}", func(writer http.ResponseWriter, req * http.Request) {
+	Router.HandleFunc("/{what}/{xx}", func(writer http.ResponseWriter, req * http.Request) {
 			vars := mux.Vars(req)
-			Input.Required(req, "kk")
+			io.Required(req, "kk")
 			Access.Debug(1, req, "xxx")
-			fmt.Fprint(writer, vars["what"])
+			io.Puts(writer, vars)
 		})
 	err := http.ListenAndServe(Project.String("server", "addr"), Router)
 	if	err != nil {

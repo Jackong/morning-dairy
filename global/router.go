@@ -8,9 +8,11 @@ package global
 import (
 	"net/http"
 	"github.com/gorilla/mux"
+	"morning-dairy/io"
+	"morning-dairy/err"
 )
 
-type BeforeFunc func(http.ResponseWriter, *http.Request) AccessError
+type BeforeFunc func(http.ResponseWriter, *http.Request) error
 
 var (
 	beforeFuncs []BeforeFunc
@@ -22,21 +24,24 @@ type router struct {
 }
 
 func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
+	op := &io.Output{ResponseWriter: writer}
+
 	defer func() {
 		if e := recover(); e != nil {
-			err := e.(AccessError)
-			Access.Error(err.Code, req, err.Msg)
-			http.Error(writer, err.Msg, err.Code)
+			accessErr := e.(err.AccessError)
+			Access.Error(accessErr.Code, req, accessErr.Msg)
+			http.Error(op, accessErr.Msg, accessErr.Code)
 			return
 		}
+		op.Render(req)
 	}()
 
-	if !fireBefore(writer, req, beforeFuncs) {
+	if !fireBefore(op, req, beforeFuncs) {
 		return
 	}
-	this.Router.ServeHTTP(writer, req)
+	this.Router.ServeHTTP(op, req)
 
-	fireAfter(writer, req)
+	fireAfter(op, req)
 }
 
 func OnBefore(before ...BeforeFunc) {
@@ -45,7 +50,7 @@ func OnBefore(before ...BeforeFunc) {
 
 func fireBefore(writer http.ResponseWriter, req *http.Request, beforeFuncs []BeforeFunc) bool {
 	for _, beforeFunc := range beforeFuncs {
-		if accessErr := beforeFunc(writer, req); accessErr.Code != CODE_OK {
+		if accessErr := beforeFunc(writer, req); accessErr != nil {
 			panic(accessErr)
 			return false
 		}

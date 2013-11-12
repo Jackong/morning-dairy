@@ -28,7 +28,6 @@ var (
 	Log log.Logger
 	Conn db.Database
 	Router *router
-	Input input
 )
 
 func init() {
@@ -70,7 +69,7 @@ func initLog() {
 	OnBefore(logBefore)
 }
 
-func logBefore(writer http.ResponseWriter, req *http.Request) (err AccessError) {
+func logBefore(writer http.ResponseWriter, req *http.Request) (err error) {
 	Access.Info(0, req, "access")
 	return
 }
