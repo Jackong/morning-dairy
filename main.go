@@ -6,22 +6,15 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 	"fmt"
 	"os"
 	. "morning-dairy/global"
-	"morning-dairy/io"
+	_ "morning-dairy/router/sign"
 )
 
 
 func main() {
-	Router.HandleFunc("/{what}/{when}", func(writer http.ResponseWriter, req * http.Request) {
-			vars := mux.Vars(req)
-			io.Required(req, "param")
-			Access.Debug(1, req, "hello")
-			io.Puts(writer, "data", vars)
-		})
 	err := http.ListenAndServe(Project.String("server", "addr"), Router)
 	if	err != nil {
 		fmt.Println(err)
