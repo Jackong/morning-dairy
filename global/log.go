@@ -91,8 +91,6 @@ func (this *accessLog) logAppend(code int, req *http.Request, v ... interface {}
 		req.Method, DELIMITER,
 		req.URL.Path, DELIMITER,
 		req.UserAgent(), DELIMITER)
-	for _, s := range v {
-		more = append(more, s)
-	}
+	more = append(more, v...)
 	return
 }

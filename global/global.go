@@ -73,9 +73,9 @@ func initInterceptors() {
     OnBefore(logBefore)
 }
 
-func logBefore(http.ResponseWriter, req *http.Request) bool {
+func logBefore(writer http.ResponseWriter, req *http.Request) (err error) {
 	Access.Info(0, req, "before", "route")
-	return true
+	return
 }
 
 func baseEnv() {
