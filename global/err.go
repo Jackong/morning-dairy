@@ -10,6 +10,10 @@ type AccessError struct {
 	Msg string
 }
 
+func (this AccessError) Error() string{
+    return this.Msg
+}
+
 const (
 	CODE_OK = 0
 )

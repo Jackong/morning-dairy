@@ -28,6 +28,7 @@ var (
 	Log log.Logger
 	Conn db.Database
 	Router *router
+	Input input
 )
 
 func init() {

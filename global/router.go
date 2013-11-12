@@ -22,6 +22,15 @@ type router struct {
 }
 
 func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
+	defer func() {
+		if e := recover(); e != nil {
+			err := e.(AccessError)
+			Access.Error(err.Code, req, err.Msg)
+			http.Error(writer, err.Msg, err.Code)
+			return
+		}
+	}()
+
 	if !fireBefore(writer, req, beforeFuncs) {
 		return
 	}
@@ -37,8 +46,7 @@ func OnBefore(before ...BeforeFunc) {
 func fireBefore(writer http.ResponseWriter, req *http.Request, beforeFuncs []BeforeFunc) bool {
 	for _, beforeFunc := range beforeFuncs {
 		if accessErr := beforeFunc(writer, req); accessErr.Code != CODE_OK {
-			Access.Error(accessErr.Code, req, accessErr.Msg)
-			http.Error(writer, accessErr.Msg, accessErr.Code)
+			panic(accessErr)
 			return false
 		}
 	}
