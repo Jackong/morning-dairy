@@ -9,13 +9,23 @@ import (
 	"net/http"
 	"morning-dairy/io/input"
 	. "morning-dairy/global"
+	"morning-dairy/service"
+	"morning-dairy/io/output"
+)
+
+var (
+	user service.User
 )
 
 func init() {
+	user = service.User{}
 	Router.HandleFunc("/sign/up", signUp)
 }
 
 func signUp(writer http.ResponseWriter, req * http.Request) {
-	input.Required(req, "userName")
+	userName := input.Required(req, "userName")
 	input.Required(req, "password")
+	if user.IsExist(userName) {
+		output.Return(writer, 0, "exist")
+	}
 }

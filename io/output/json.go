@@ -25,6 +25,12 @@ func (this *Json) Puts(ret []interface {}) {
 		this.ret[ret[index].(string)] = ret[index + 1]
 	}
 }
+
+func (this *Json) IsReturn() bool {
+	_, ok := this.ret["code"]
+	return ok
+}
+
 func (this *Json) Render() (err error) {
 	var data []byte
 	data, err = json.Marshal(this.ret)

@@ -87,7 +87,9 @@ func logBefore(writer http.ResponseWriter, req *http.Request) (err error) {
 }
 
 func logAfter(writer http.ResponseWriter, req * http.Request) {
-	Access.Info(http.StatusOK, req, "response")
+	if output.IsReturn(writer) {
+		return
+	}
 	output.Return(writer, http.StatusOK, "ok")
 }
 
