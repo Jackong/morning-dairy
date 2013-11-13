@@ -11,7 +11,7 @@ import (
 
 type Output interface {
 	Puts(ret []interface {})
-	Render(code int, msg string) (error)
+	Render(status int, msg string) (error)
 }
 
 func Puts(writer http.ResponseWriter, ret ...interface {}) {

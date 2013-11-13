@@ -26,8 +26,8 @@ func signUp(writer http.ResponseWriter, req * http.Request) {
 	userName := input.Required(req, "userName")
 	input.Required(req, "password")
 	if user.IsExist(userName) {
-		output.Puts(writer, "res", RES_FAIL)
+		output.Puts(writer, "code", CODE_FAIL)
 		return
 	}
-	output.Puts(writer, "res", RES_OK)
+	output.Puts(writer, "code", CODE_OK)
 }

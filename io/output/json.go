@@ -26,8 +26,8 @@ func (this *Json) Puts(ret []interface {}) {
 	}
 }
 
-func (this *Json) Render(code int, msg string) (err error) {
-	this.ret["code"] = code
+func (this *Json) Render(status int, msg string) (err error) {
+	this.ret["status"] = status
 	this.ret["msg"] = msg
 
 	var data []byte

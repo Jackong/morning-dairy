@@ -52,7 +52,7 @@ type notFoundHandler struct {
 }
 
 func (this *notFoundHandler) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
-	panic(err.AccessError{Code: http.StatusNotFound, Msg: "page not found"})
+	panic(err.AccessError{Status: http.StatusNotFound, Msg: "page not found"})
 }
 
 func initLog() {

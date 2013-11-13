@@ -6,7 +6,7 @@
 package err
 
 type AccessError struct {
-	Code int
+	Status int
 	Msg string
 }
 

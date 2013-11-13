@@ -6,6 +6,6 @@
 package global
 
 const (
-	RES_FAIL = -1
-	RES_OK = iota
+	CODE_FAIL = -1
+	CODE_OK = iota
 )

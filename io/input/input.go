@@ -21,13 +21,13 @@ func Get(req *http.Request, name, pattern, defo string) string {
 		if defo != "" {
 			return defo
 		}
-		panic(err.AccessError{Code: http.StatusBadRequest, Msg: "Invalid param: " + name})
+		panic(err.AccessError{Status: http.StatusBadRequest, Msg: "Invalid param: " + name})
 	}
 	if pattern == "" {
 		return value
 	}
 	if match, _ := regexp.MatchString(pattern, value); !match {
-		panic(err.AccessError{Code: http.StatusBadRequest, Msg: "Invalid param: " + name})
+		panic(err.AccessError{Status: http.StatusBadRequest, Msg: "Invalid param: " + name})
 	}
 	return value
 }
