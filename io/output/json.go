@@ -26,11 +26,10 @@ func (this *Json) Puts(ret []interface {}) {
 	}
 }
 
-func (this *Json) Render() (err error) {
-	if _, ok := this.ret["code"]; !ok {
-		this.ret["code"] = http.StatusOK
-		this.ret["msg"] = "ok"
-	}
+func (this *Json) Render(code int, msg string) (err error) {
+	this.ret["code"] = code
+	this.ret["msg"] = msg
+
 	var data []byte
 	data, err = json.Marshal(this.ret)
 	if err != nil {

@@ -27,13 +27,17 @@ func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 	op := output.NewJson(writer)
 
 	defer func() {
+		code := http.StatusOK
+		msg := "ok"
 		if e := recover(); e != nil {
 			accessErr := e.(err.AccessError)
 			Access.Error(accessErr.Code, req, accessErr.Msg)
-			output.Return(op, accessErr.Code, accessErr.Msg)
+			code = accessErr.Code
+			msg = accessErr.Msg
 		}
-		if re := op.Render(); re != nil {
-			Access.Alert(http.StatusBadRequest, req, re)
+
+		if re := op.Render(code, msg); re != nil {
+			Access.Alert(-1, req, "render", re)
 		}
 	}()
 

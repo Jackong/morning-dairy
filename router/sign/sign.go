@@ -8,7 +8,7 @@ package sign
 import (
 	"net/http"
 	"morning-dairy/io/input"
-	. "morning-dairy/global"
+	."morning-dairy/global"
 	"morning-dairy/service"
 	"morning-dairy/io/output"
 )
@@ -26,6 +26,8 @@ func signUp(writer http.ResponseWriter, req * http.Request) {
 	userName := input.Required(req, "userName")
 	input.Required(req, "password")
 	if user.IsExist(userName) {
-		output.Return(writer, 0, "exist")
+		output.Puts(writer, "res", RES_FAIL)
+		return
 	}
+	output.Puts(writer, "res", RES_OK)
 }
