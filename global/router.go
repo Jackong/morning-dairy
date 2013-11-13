@@ -73,10 +73,14 @@ func fireAfter(writer http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func OnBeforeRoute(handlerFunc http.HandlerFunc, before ...BeforeFunc) http.HandlerFunc {
+func OnBeforeRouteFunc(handlerFunc http.HandlerFunc, before ...BeforeFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, req *http.Request) {
 		if fireBefore(writer, req, before) {
 			handlerFunc(writer, req)
 		}
 	}
+}
+
+func OnBeforeRoute(handler http.Handler, before ...BeforeFunc) http.Handler {
+	return OnBeforeRouteFunc(handler.ServeHTTP, before...)
 }

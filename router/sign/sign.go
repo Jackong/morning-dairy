@@ -17,12 +17,16 @@ var (
 	user service.User
 )
 
-func init() {
-	user = service.User{}
-	Router.HandleFunc("/sign/up", signUp)
+type beforeHnd struct {
+
 }
 
-func signUp(writer http.ResponseWriter, req * http.Request) {
+func init() {
+	user = service.User{}
+	Router.Handle("/sign/up", &beforeHnd{})
+}
+
+func (this *beforeHnd) ServeHTTP(writer http.ResponseWriter, req * http.Request) {
 	userName := input.Required(req, "userName")
 	input.Required(req, "password")
 	if user.IsExist(userName) {
