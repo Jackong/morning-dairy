@@ -4,11 +4,32 @@
  * Time: 9:23 PM
  */
 package service
+import (
+	"morning-dairy/model"
+)
 
-type User struct {
+type user struct {
 
 }
 
-func (this User) IsExist(name string) bool {
-	return true
+var (
+	User user
+)
+
+func init() {
+    User = user{}
+}
+
+func (this user) Exist(name string) bool {
+	return model.User.Exist(name)
+}
+
+
+func (this user) Create(name, password string) bool {
+	return model.User.Create(name, password)
+}
+
+
+func (this user) SignIn(name, password string) bool {
+    return model.User.Password(name) == password
 }

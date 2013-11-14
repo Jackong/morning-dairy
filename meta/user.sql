@@ -1,0 +1,7 @@
+CREATE TABLE test.user (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(20) NOT NULL,
+  password VARCHAR(32) NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE KEY `idx_name`(name)
+) ENGINE = InnoDB;

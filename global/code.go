@@ -8,4 +8,5 @@ package global
 const (
 	CODE_FAIL = -1
 	CODE_OK = iota
+	CODE_EXIST
 )

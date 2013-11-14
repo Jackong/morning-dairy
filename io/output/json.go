@@ -35,6 +35,7 @@ func (this *Json) Render(status int, msg string) (err error) {
 	if err != nil {
 		return err
 	}
+	this.ResponseWriter.Header().Set("Content-Type", "applicatoin/json; charset=utf-8")
 	fmt.Fprint(this.ResponseWriter, string(data))
 	return
 }
