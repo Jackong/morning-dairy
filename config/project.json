@@ -27,5 +27,9 @@
     "view" : {
         "root": "src/github.com/Jackong/gweb/view",
         "paths": ["/js/", "/css/", "/img/", "/html/"]
+    },
+    "cookie": {
+        "hash": "12345",
+        "block": "1234567890123456"
     }
 }

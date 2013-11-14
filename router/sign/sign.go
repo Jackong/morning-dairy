@@ -11,6 +11,7 @@ import (
 	."morning-dairy/global"
 	"morning-dairy/service"
 	"morning-dairy/io/output"
+	"fmt"
 )
 
 
@@ -20,8 +21,8 @@ const (
 )
 
 func init() {
-	Router.HandleFunc("/sign/up", signUp).Methods("POST")
-	Router.HandleFunc("/sign/in", signIn).Methods("POST")
+	Router.HandleFunc("/sign/up", signUp).Methods("POST", "GET")
+	Router.HandleFunc("/sign/in", signIn).Methods("POST", "GET")
 }
 
 func signUp(writer http.ResponseWriter, req * http.Request) {
@@ -34,15 +35,17 @@ func signUp(writer http.ResponseWriter, req * http.Request) {
 	if service.User.Create(name, password) {
 		code = CODE_OK
 	}
+	service.User.SignIn(writer, name, password)
 	output.Puts(writer, "code", code)
 }
 
 func signIn(writer http.ResponseWriter, req *http.Request) {
 	name, password := nameAndPassword(req)
 	code := CODE_FAIL
-	if service.User.SignIn(name, password) {
+	if service.User.CanSignIn(name, password) {
 		code = CODE_OK
 	}
+	service.User.SignIn(writer, name, password)
 	output.Puts(writer, "code", code)
 }
 
