@@ -38,11 +38,7 @@ func (this user) CanSignIn(name, password string) bool {
 }
 
 func (this user) SignIn(writer http.ResponseWriter, name, password string) {
-	session := map[string] string {
-		"name": name,
-		"password": password,
-	}
-	if encoded, err := this.secureCookie.Encode("gsession", session); err == nil {
+	if encoded, err := this.secureCookie.Encode("gsession", name); err == nil {
 		cookie := &http.Cookie{
 			Name:  "gsession",
 			Value: encoded,
@@ -54,11 +50,9 @@ func (this user) SignIn(writer http.ResponseWriter, name, password string) {
 
 func (this user) IsSignIn(req *http.Request) (ok bool, name string) {
 	if cookie, err := req.Cookie("gsession"); err == nil {
-		value := make(map[string]string)
-		if err = this.secureCookie.Decode("gsession", cookie.Value, &value); err == nil {
-			name, ok := value["name"]
-			_, ko := value["password"]
-			if ok && ko {
+		var name string
+		if err = this.secureCookie.Decode("gsession", cookie.Value, &name); err == nil {
+			if name != "" {
 				return true, name
 			}
 		}
