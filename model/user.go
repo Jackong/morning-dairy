@@ -55,7 +55,7 @@ func (this user) Password(name string) string {
 		"name": name,
 	})
 	if err != nil {
-		Log.Alert(err)
+		Log.Warn(err)
 		return ""
 	}
 	return item["password"].(string)
