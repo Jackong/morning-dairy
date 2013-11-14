@@ -17,19 +17,19 @@ func Get(req *http.Request, name, pattern, defo string) string {
 		req.ParseForm()
 		value = req.Form.Get(name)
 	}
-	if value == "" {
-		if defo != "" {
-			return defo
-		}
-		panic(err.AccessError{Status: http.StatusBadRequest, Msg: "Invalid param: " + name})
+
+	if pattern == "" && value == "" && defo != ""{
+		return defo
 	}
-	if pattern == "" {
+
+	if match, _ := regexp.MatchString(pattern, value); match {
 		return value
 	}
-	if match, _ := regexp.MatchString(pattern, value); !match {
-		panic(err.AccessError{Status: http.StatusBadRequest, Msg: "Invalid param: " + name})
+
+	if defo != "" {
+		return defo
 	}
-	return value
+	panic(err.AccessError{Status: http.StatusBadRequest, Msg: "Invalid param: " + name})
 }
 
 func Default(req *http.Request, name, defo string) string {

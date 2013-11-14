@@ -11,6 +11,7 @@ import (
 	"os"
 	. "morning-dairy/global"
 	_ "morning-dairy/router/sign"
+	_ "morning-dairy/router/dairy"
 )
 
 
