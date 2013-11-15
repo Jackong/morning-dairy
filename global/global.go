@@ -111,7 +111,7 @@ func fileLog(dir, date string, level int) log.Logger {
 	file, err := os.OpenFile(dir + "/" + date + ".log", os.O_RDWR | os.O_CREATE | os.O_APPEND, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(2)
+		ShutDown()
 	}
 	logger := log.NewLogger(file, Project.String("server", "name"), level)
 	return logger
@@ -132,7 +132,7 @@ func mailLog(date string) log.Logger {
 	if check {
 		if err := mail.SendMail("starting server " + server + "..."); err != nil {
 			fmt.Println(err)
-			os.Exit(2)
+			ShutDown()
 		}
 		return log.NewLogger(&asyncMail{mail}, server, mailLevel)
 	}
@@ -150,6 +150,10 @@ func openDb() {
 	var err error
 	if Conn, err = db.Open("mysql", settings); err != nil {
 		fmt.Println(err)
-		os.Exit(2)
+		ShutDown()
 	}
+
+	OnShutDown(func() {
+		Conn.Close()
+	})
 }

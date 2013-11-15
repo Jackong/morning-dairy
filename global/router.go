@@ -30,10 +30,16 @@ func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 		status := http.StatusOK
 		msg := "ok"
 		if e := recover(); e != nil {
-			accessErr := e.(err.AccessError)
-			Access.Error(accessErr.Status, req, accessErr.Msg)
-			status = accessErr.Status
-			msg = accessErr.Msg
+			switch e.(type) {
+			case err.AccessError:
+				accessErr := e.(err.AccessError)
+				Access.Error(accessErr.Status, req, accessErr.Msg)
+				status = accessErr.Status
+				msg = accessErr.Msg
+			default:
+				Access.Alert("unkown panic", e)
+				Log.Alert("unkown panic", e)
+			}
 		}
 
 		if re := op.Render(status, msg); re != nil {
