@@ -14,16 +14,21 @@ import (
 	"morning-dairy/service"
 )
 
+const (
+	RE_FROM = "^[0-4]{1}$"
+)
+
 func init() {
-	Router.HandleFunc("/dairy/{date:[0-9]{8}}", dairy)
+	Router.HandleFunc("/dairy/{date:[0-9]{8}}", OnBeforeRouteFunc(dairy, service.Before2Sign))
 }
 
 func dairy(writer http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	date := vars["date"]
-	from := input.Get(req, "from", service.RE_FROM, service.FROM_GLOBAL)
+	from := input.Get(req, "from", RE_FROM, service.FROM_GLOBAL)
 
-	output.Puts(writer, "date", date)
-	output.Puts(writer, "from", from)
+	dairies := service.Dairy.GetByDate(date, from)
+
+	output.Puts(writer, "dairys", dairies)
 	output.Puts(writer, "code", CODE_OK)
 }

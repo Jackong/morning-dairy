@@ -37,7 +37,7 @@ func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 				status = accessErr.Status
 				msg = accessErr.Msg
 			default:
-				Access.Alert("unkown panic", e)
+				Access.Alert(-2, req, "unkown panic", e)
 				Log.Alert("unkown panic", e)
 			}
 		}

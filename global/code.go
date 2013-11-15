@@ -7,6 +7,7 @@ package global
 
 const (
 	CODE_FAIL = -1
-	CODE_OK = iota
+	CODE_OK = (iota - 1)
 	CODE_EXIST
+	CODE_SIGN_IN_REQUIRED
 )

@@ -22,6 +22,7 @@ const (
 func init() {
 	Router.HandleFunc("/sign/up", signUp).Methods("POST", "GET")
 	Router.HandleFunc("/sign/in", signIn).Methods("POST", "GET")
+	Router.HandleFunc("/sign/out", signOut).Methods("POST", "GET")
 }
 
 func signUp(writer http.ResponseWriter, req * http.Request) {
@@ -48,6 +49,10 @@ func signIn(writer http.ResponseWriter, req *http.Request) {
 	output.Puts(writer, "code", code)
 }
 
+func signOut(writer http.ResponseWriter, req *http.Request) {
+	service.User.SignOut(writer, req)
+	output.Puts(writer, "code", CODE_OK)
+}
 
 func nameAndPassword(req *http.Request) (name, password string){
 	name = input.Pattern(req, "name", RE_EMAIL)
