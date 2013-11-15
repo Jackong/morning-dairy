@@ -39,6 +39,8 @@ func (this *router) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 			default:
 				Access.Alert(-2, req, "unkown panic", e)
 				Log.Alert("unkown panic", e)
+				status = http.StatusInternalServerError
+				msg = "internal server error"
 			}
 		}
 

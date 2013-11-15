@@ -89,11 +89,11 @@ func baseEnv() {
 	}
 
 	Now = func() string {
-		return Time().Format("2006-01-02 15:04:05")
+		return Time().Format(FORMAT_DATE_TIME)
 	}
 
 	Today = func() string {
-		return Time().Format("2006-01-02")
+		return Time().Format(FORMAT_DATE)
 	}
 
 	GoPath = os.Getenv("GOPATH")
