@@ -85,7 +85,7 @@ func TestRequiredButNotFound(t *testing.T) {
 }
 
 func TestPatternButDefault(t *testing.T) {
-    value := get(req, "key3", "[0-4]", "4")
+    value := Get(req, "key3", "[0-4]", "4")
 	if value != "4" {
 		t.Error("could not get the default value by pattern")
 	}

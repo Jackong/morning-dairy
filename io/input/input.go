@@ -11,7 +11,7 @@ import (
 	"morning-dairy/err"
 )
 
-func get(req *http.Request, name, pattern, defo string) string {
+func Get(req *http.Request, name, pattern, defo string) string {
 	value := req.FormValue(name)
 	if value == "" {
 		req.ParseForm()
@@ -36,11 +36,11 @@ func get(req *http.Request, name, pattern, defo string) string {
 }
 
 func Default(req *http.Request, name, defo string) string {
-	return get(req, name, "", defo)
+	return Get(req, name, "", defo)
 }
 
 func Pattern(req *http.Request, name, pattern string) string {
-	return get(req, name, pattern, "")
+	return Get(req, name, pattern, "")
 }
 
 func Required(req *http.Request, name string) string {
