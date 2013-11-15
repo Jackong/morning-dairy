@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"morning-dairy/io/output"
 	"morning-dairy/io/input"
+	"morning-dairy/service"
 )
 
 func init() {
@@ -20,7 +21,7 @@ func init() {
 func dairy(writer http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	date := vars["date"]
-	from := input.Get(req, "from", "^[0-4]{1}$", "0")
+	from := input.Get(req, "from", service.RE_FROM, service.FROM_GLOBAL)
 
 	output.Puts(writer, "date", date)
 	output.Puts(writer, "from", from)
