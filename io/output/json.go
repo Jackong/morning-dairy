@@ -21,7 +21,9 @@ func NewJson(writer http.ResponseWriter) *Json{
 }
 
 func (this *Json) Puts(ret []interface {}) {
-	for index := 0; index < len(ret); index += 2 {
+	length := len(ret)
+	length -= (length % 2)
+	for index := 0; index < length; index += 2 {
 		this.ret[ret[index].(string)] = ret[index + 1]
 	}
 }
