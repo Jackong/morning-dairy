@@ -11,15 +11,18 @@ import (
 	"morning-dairy/err"
 )
 
-func Get(req *http.Request, name, pattern, defo string) string {
+func get(req *http.Request, name, pattern, defo string) string {
 	value := req.FormValue(name)
 	if value == "" {
 		req.ParseForm()
 		value = req.Form.Get(name)
 	}
 
-	if pattern == "" && value == "" && defo != ""{
-		return defo
+	if pattern == "" && value == "" {
+		if defo != "" {
+			return defo
+		}
+		panic(err.AccessError{Status: http.StatusBadRequest, Msg: "Invalid param: " + name})
 	}
 
 	if match, _ := regexp.MatchString(pattern, value); match {
@@ -33,11 +36,11 @@ func Get(req *http.Request, name, pattern, defo string) string {
 }
 
 func Default(req *http.Request, name, defo string) string {
-	return Get(req, name, "", defo)
+	return get(req, name, "", defo)
 }
 
 func Pattern(req *http.Request, name, pattern string) string {
-	return Get(req, name, pattern, "")
+	return get(req, name, pattern, "")
 }
 
 func Required(req *http.Request, name string) string {
