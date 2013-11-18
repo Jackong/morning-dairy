@@ -6,8 +6,8 @@
 package main
 
 import (
-	"net/http"
 	"fmt"
+	"github.com/braintree/manners"
 	. "morning-dairy/global"
 	_ "morning-dairy/router/sign"
 	_ "morning-dairy/router/dairy"
@@ -15,7 +15,7 @@ import (
 
 
 func main() {
-	err := http.ListenAndServe(Project.String("server", "addr"), Router)
+	err := manners.ListenAndServe(Project.String("server", "addr"), Router)
 	if	err != nil {
 		fmt.Println(err)
 	}
